@@ -1,3 +1,4 @@
+import { signup } from "#controllers/auth.controller.js";
 import express from "express";
 
 
@@ -5,9 +6,7 @@ const router = express.Router();
 
 // Define your authentication routes here
 
-router.post("/sign-up", (req, res) => {
-    res.send("POST /api/auth/sign-up response");
-})
+router.post("/sign-up", signup)
 
 
 router.post("/sign-in", (req, res) => {
