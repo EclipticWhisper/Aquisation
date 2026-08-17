@@ -1,4 +1,4 @@
-import { clear } from "winston";
+// import { clear } from "winston";
 
 export const cookies = {
     getOptions: () => ({
