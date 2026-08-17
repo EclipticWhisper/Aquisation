@@ -1,4 +1,3 @@
-import { clear } from "winston";
 
 export const cookies = {
     getOptions: () => ({
