@@ -8,7 +8,7 @@ export const hashPassword = async (password) => {
     try {
         return await bcrypt.hash(password, 10);
     } catch (e) {
-        // FIX: Removed the typo typo logger.error(e)(...)
+        // FIX: Removed the typo in logger.error(...)
         logger.error(`Error hashing password: ${e}`);
         throw new Error("Error hashing password");
     }
