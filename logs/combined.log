@@ -1,0 +1,3 @@
+{"level":"info","message":"User adrian@jsmastery.pro created successfully.","service":"acquisition-api","timestamp":"2026-08-22T17:25:20.929Z"}
+{"level":"info","message":"User Signed Up Successfully: adrian@jsmastery.pro with role: user","service":"acquisition-api","timestamp":"2026-08-22T17:25:20.940Z"}
+{"level":"info","message":"::1 - - [22/Aug/2026:17:25:20 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 201 118 \"-\" \"PostmanRuntime/2.3.4\"","service":"acquisition-api","timestamp":"2026-08-22T17:25:20.948Z"}

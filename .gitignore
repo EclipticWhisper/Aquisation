@@ -1,3 +1,7 @@
 node_modules/
 dist/
+.env
 .env.*
+
+# Local Postman workspaces and exports
+postman/
