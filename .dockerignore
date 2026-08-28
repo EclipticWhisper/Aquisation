@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+.env
+.env.*
+!.env.development.example
+!.env.production.example
+.git
+.gitignore
+logs
+postman
+.neon_local
+drizzle
