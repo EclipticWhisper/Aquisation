@@ -5,3 +5,7 @@ dist/
 
 # Local Postman workspaces and exports
 postman/
+.neon_local/
+
+!.env.development.example
+!.env.production.example
