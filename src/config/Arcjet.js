@@ -1,12 +1,13 @@
 import arcjet, { shield, detectBot } from '@arcjet/node';
 
+const mode = process.env.NODE_ENV === 'production' ? 'LIVE' : 'DRY_RUN';
+
 const aj = arcjet({
   key: process.env.ARCJET_KEY,
   rules: [
-    shield({ mode: 'LIVE' }),
-
+    shield({ mode }),
     detectBot({
-      mode: 'LIVE',
+      mode,
       allow: [
         'CATEGORY:SEARCH_ENGINE',
         'CATEGORY:PREVIEW',
@@ -14,4 +15,6 @@ const aj = arcjet({
     }),
   ],
 });
+
+export { mode as arcjetMode };
 export default aj;

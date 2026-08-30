@@ -8,6 +8,7 @@ services:
     env_file:
       - .env.development
     volumes:
+      # Optional: Persist branches per Git branch
       - ./.neon_local/:/tmp/.neon_local
       - ./.git/HEAD:/tmp/.git/HEAD:ro,consistent
     networks:
@@ -24,16 +25,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: development # <--- This will now successfully find the "development" stage above
+      target: development
     container_name: acquisition-app-dev
     ports:
-      - '5173:5173'
+      - '5173:3000' # Maps your host's 5173 to the container's internal 3000
     env_file:
       - .env.development
     volumes:
+      # Mount source code for hot reload
       - ./src:/app/src:ro
       - ./package.json:/app/package.json:ro
-      - /app/node_modules # Prevents local node_modules from overwriting container node_modules
+      # Exclude node_modules to prevent conflicts
+      - /app/node_modules
     networks:
       - acquisition-network
     depends_on:
@@ -46,13 +49,9 @@ services:
       test:
         [
           'CMD',
-          'pg_isready',
-          '-h',
-          'localhost',
-          '-p',
-          '5432',
-          '-U',
-          'neon'
+          'node',
+          '-e',
+          "const http = require('http'); const req = http.request({hostname: 'localhost', port: 3000, path: '/health'}, (res) => process.exit(res.statusCode === 200 ? 0 : 1)); req.on('error', () => process.exit(1)); req.end();",
         ]
       interval: 30s
       timeout: 10s
@@ -62,3 +61,7 @@ services:
 networks:
   acquisition-network:
     driver: bridge
+
+volumes:
+  neon-local-data:
+    driver: local

@@ -2,6 +2,7 @@ node_modules/
 dist/
 .env
 .env.*
+logs/
 
 # Local Postman workspaces and exports
 postman/
