@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Development startup script for Acquisition App with Neon Local
-# This script starts the application in development mode with Neon Local
+
+set -e
 
 echo "🚀 Starting Acquisition App in Development Mode"
 echo "================================================"
@@ -9,7 +10,7 @@ echo "================================================"
 # Check if .env.development exists
 if [ ! -f .env.development ]; then
     echo "❌ Error: .env.development file not found!"
-    echo "   Please copy .env.development from the template and update with your Neon credentials."
+    echo "   Please copy .env.development.example to .env.development and update with your Neon credentials."
     exit 1
 fi
 
@@ -34,27 +35,23 @@ echo "   - Neon Local proxy will create an ephemeral database branch"
 echo "   - Application will run with hot reload enabled"
 echo ""
 
-# 1. Start up the containers in the background first so they exist
-docker compose -f docker-compose.dev.yml up -d --build
+docker compose --env-file .env.development -f docker-compose.dev.yml up -d --build
 
-# 2. Wait for the Neon database container health check to pass
-echo "⏳ Waiting for the database proxy to be fully ready..."
-until docker compose -f docker-compose.dev.yml exec -T neon-local pg_isready -h localhost -U neon >/dev/null 2>&1; do
-    echo "   ...still initialization checking, waiting 2 seconds..."
+# Wait for the Neon Local database proxy to be ready
+echo "⏳ Waiting for the database proxy to be ready..."
+until docker compose -f docker-compose.dev.yml exec -T neon-local pg_isready -h localhost -p 5432 -U neon >/dev/null 2>&1; do
+    echo "   ...still initializing, waiting 2 seconds..."
     sleep 2
 done
 
-# 3. Apply migrations INSIDE the active container context now that it's online
-echo "📜 Applying latest schema with Drizzle inside container..."
+# Apply migrations inside the app container (which shares the compose network)
+echo "📜 Applying latest schema with Drizzle..."
 docker compose -f docker-compose.dev.yml exec -T app npm run db:migrate
 
 echo ""
-echo "🎉 Development environment successfully configured!"
+echo "🎉 Development environment started!"
 echo "   Application: http://localhost:5173"
 echo "   Database: postgres://neon:npg@localhost:5432/neondb"
 echo ""
-echo "Streaming live application logs below (Press Ctrl+C to detach without stopping services):"
-echo "=========================================================================================="
-
-# 4. Stream the live console logs to your terminal window
+echo "Streaming application logs below (press Ctrl+C to detach without stopping services):"
 docker compose -f docker-compose.dev.yml logs -f app
